@@ -1,6 +1,4 @@
-import { it } from "jsr:@std/testing/bdd"
 import type { Content, GenerateContentRequest, Part } from "./gemini-api-client/types.ts"
-import { HarmBlockThreshold, HarmCategory } from "./gemini-api-client/types.ts"
 import type { Any } from "./log.ts"
 import type { OpenAI } from "./types.ts"
 
@@ -107,14 +105,16 @@ export function genModel(req: OpenAI.Chat.ChatCompletionCreateParams): [GeminiMo
         functionDeclarations: functions,
       },
     ],
-    safetySettings: [
-      HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-      HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-      HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-      HarmCategory.HARM_CATEGORY_HARASSMENT,
-    ].map((category) => ({
+    safetySettings: (
+      [
+        "HARM_CATEGORY_HATE_SPEECH",
+        "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+        "HARM_CATEGORY_DANGEROUS_CONTENT",
+        "HARM_CATEGORY_HARASSMENT",
+      ] as const
+    ).map((category) => ({
       category,
-      threshold: HarmBlockThreshold.BLOCK_NONE,
+      threshold: "BLOCK_NONE",
     })),
   }
   return [model, generateContentRequest]

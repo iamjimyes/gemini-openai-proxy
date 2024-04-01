@@ -581,13 +581,13 @@ function genModel(req) {
       }
     ],
     safetySettings: [
-      "HARM_CATEGORY_HATE_SPEECH" /* HARM_CATEGORY_HATE_SPEECH */,
-      "HARM_CATEGORY_SEXUALLY_EXPLICIT" /* HARM_CATEGORY_SEXUALLY_EXPLICIT */,
-      "HARM_CATEGORY_DANGEROUS_CONTENT" /* HARM_CATEGORY_DANGEROUS_CONTENT */,
-      "HARM_CATEGORY_HARASSMENT" /* HARM_CATEGORY_HARASSMENT */
+      "HARM_CATEGORY_HATE_SPEECH",
+      "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+      "HARM_CATEGORY_DANGEROUS_CONTENT",
+      "HARM_CATEGORY_HARASSMENT"
     ].map((category) => ({
       category,
-      threshold: "BLOCK_NONE" /* BLOCK_NONE */
+      threshold: "BLOCK_NONE"
     }))
   };
   return [model, generateContentRequest];
@@ -665,7 +665,7 @@ function getText(response) {
   }
   return "";
 }
-var badFinishReasons = ["RECITATION" /* RECITATION */, "SAFETY" /* SAFETY */];
+var badFinishReasons = ["RECITATION", "SAFETY"];
 function hadBadFinishReason(candidate) {
   return !!candidate.finishReason && badFinishReasons.includes(candidate.finishReason);
 }
@@ -780,9 +780,11 @@ async function nonStreamingChatProxyHandler(req, apiParam, log) {
         message: {
           role: "assistant",
           content: typeof geminiResp === "string" ? geminiResp : null,
-          function_call: typeof geminiResp === "string" ? void 0 : {
-            name: geminiResp.name,
-            arguments: JSON.stringify(geminiResp.args)
+          ...typeof geminiResp === "string" ? void 0 : {
+            function_call: {
+              name: geminiResp.name ?? "",
+              arguments: JSON.stringify(geminiResp.args)
+            }
           }
         },
         logprobs: null,
@@ -797,7 +799,7 @@ async function nonStreamingChatProxyHandler(req, apiParam, log) {
 // src/openai/chat/completions/StreamingChatProxyHandler.ts
 async function* streamingChatProxyHandler(req, apiParam) {
   const [model, geminiReq] = genModel(req);
-  const geminiResp = await generateContent(apiParam, model, geminiReq).then((it) => it.response.text()).catch((e3) => e3.message ?? e3?.toString());
+  const geminiResp = await generateContent(apiParam, model, geminiReq).then((it) => it.response.result()).catch((e3) => e3.message ?? e3?.toString());
   function genOpenAiResp(content, stop) {
     return {
       id: "chatcmpl-abc123",
