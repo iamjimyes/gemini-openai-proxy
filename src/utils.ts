@@ -87,7 +87,7 @@ function hasImageMessage(messages: OpenAI.Chat.ChatCompletionMessageParam[]): bo
 }
 
 export function genModel(req: OpenAI.Chat.ChatCompletionCreateParams): [GeminiModel, GenerateContentRequest] {
-  const model = hasImageMessage(req.messages) ? GeminiModel.GEMINI_PRO_VISION : GeminiModel.GEMINI_PRO
+  const model: GeminiModel = hasImageMessage(req.messages) ? "gemini-pro" : "gemini-pro-vision"
 
   let functions = req.tools?.filter((it) => it.type === "function")?.map((it) => it.function) ?? []
 
@@ -119,10 +119,7 @@ export function genModel(req: OpenAI.Chat.ChatCompletionCreateParams): [GeminiMo
   }
   return [model, generateContentRequest]
 }
-export enum GeminiModel {
-  GEMINI_PRO = "gemini-pro",
-  GEMINI_PRO_VISION = "gemini-pro-vision",
-}
+export type GeminiModel = "gemini-pro" | "gemini-pro-vision"
 
 export function getRuntimeKey() {
   const global = globalThis as typeof globalThis & Record<string, undefined | Any>

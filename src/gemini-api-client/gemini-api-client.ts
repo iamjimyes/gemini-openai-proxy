@@ -60,7 +60,7 @@ async function makeRequest(url: RequestUrl, body: string, requestOptions?: Reque
 
 export class RequestUrl {
   constructor(
-    public model: string,
+    public model: GeminiModel,
     public task: Task,
     public stream: boolean,
     public apiParam: ApiParam,

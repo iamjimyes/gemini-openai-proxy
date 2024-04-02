@@ -1,6 +1,6 @@
 #!/usr/bin/env -S deno run --allow-net --allow-env --allow-write=./src --allow-read=.
-import openapiTS from "https://esm.sh/openapi-typescript@6.7.5?bundle"
 import { convert } from "https://esm.sh/google-discovery-to-swagger@2.1.0?dev"
+import openapiTS from "https://esm.sh/openapi-typescript@6.7.5?bundle"
 import converter from "https://esm.sh/swagger2openapi@7.0.8"
 
 const url = new URL("https://generativelanguage.googleapis.com/$discovery/rest")
